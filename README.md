@@ -2,6 +2,8 @@
 
 Scrubber provides an easy way to clean up old files in a directory.
 
+It is especially useful on platforms where `logrotate` is not easily available or disk space is sparse.
+
 ## Configuration
 
 You can specify directories to cleanup in a `toml` configuration file. You can define one or more strategies used for
@@ -73,3 +75,12 @@ You can run `scrubber` from the command line. The following options are availabl
 |----------|----------------------|--------------------------------------------------------------|
 | -config  | scrubber.config.toml |  The path to your configuration file.                        |
 | -pretend | false                | If specified scrubber will log actions but not execute them. |
+
+## Build
+
+To generate your own `scrubber` binary execute the following steps:
+
+```bash
+dep ensure
+go build
+```
