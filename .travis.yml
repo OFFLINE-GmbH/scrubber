@@ -5,5 +5,4 @@ go:
   - master
 
 script:
-  - dep ensure
   - go test -v ./...
