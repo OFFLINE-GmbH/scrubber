@@ -1,6 +1,7 @@
 package scrubber
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -16,7 +17,7 @@ func TestZip(t *testing.T) {
 	c := StrategyConfig{Type: StrategyTypeSize, Limit: "10b", Action: ActionTypeZip}
 	d := directory{Path: testPath}
 
-	logger := log.New(os.Stdout, "", 0)
+	logger := log.New(ioutil.Discard, "", 0)
 
 	a := newZipAction(&d, fs, logger, false)
 	s := newSizeStrategy(&c, &d, a, logger)

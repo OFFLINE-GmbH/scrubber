@@ -5,19 +5,6 @@ import (
 	"testing"
 )
 
-// setupDirectoryTest creates an in-memory filesystem and adds some files.
-func setupDirectoryTest() {
-	// appFS := afero.NewMemMapFs()
-	//
-	// appFS.MkdirAll(dir, 0755)
-	// afero.WriteFile(appFS, dir+"/include.txt", []byte("file a"), 0644)
-	// afero.WriteFile(appFS, dir+"/include.pdf", []byte("file a"), 0644)
-	// afero.WriteFile(appFS, dir+"/exclude.exe", []byte("file b"), 0644)
-	// afero.WriteFile(appFS, dir+"/exclude.zip", []byte("file b"), 0644)
-	//
-	// return appFS
-}
-
 // TestExclude checks if exclude rules are applied correctly.
 func TestExclude(t *testing.T) {
 	fs := &mockedFs{

@@ -1,6 +1,7 @@
 package scrubber
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"testing"
@@ -20,7 +21,7 @@ func TestAge(t *testing.T) {
 	c := StrategyConfig{Type: StrategyTypeAge, Limit: "7d", Action: ActionTypeDelete}
 	d := directory{Path: testPath}
 
-	logger := log.New(os.Stdout, "", 0)
+	logger := log.New(ioutil.Discard, "", 0)
 
 	a := newDeleteAction(&d, fs, logger, false)
 	s := newAgeStrategy(&c, &d, a, logger)
