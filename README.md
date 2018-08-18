@@ -1,5 +1,7 @@
 # Scrubber
 
+[![Build Status](https://travis-ci.org/OFFLINE-GmbH/scrubber.svg?branch=master)](https://travis-ci.org/OFFLINE-GmbH/scrubber)
+
 Scrubber provides an easy way to clean up old files in a directory.
 
 It is especially useful on platforms where `logrotate` is not easily available or disk space is sparse.
