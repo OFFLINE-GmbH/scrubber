@@ -7,7 +7,7 @@ It is especially useful on platforms where `logrotate` is not easily available o
 ## Configuration
 
 You can specify directories to cleanup in a `toml` configuration file. You can define one or more strategies used for
-this directory.
+each directory.
 
 ```toml
 title = "Log scrubber example config"
@@ -54,7 +54,7 @@ The following options are available for each `directory`:
 | include | (Optional) Define what files should be included. All files without a matching extension will be ignored. |
 | exclude | (Optional) Define what files should be excluded. All files with matching extension will be ignored.      |
 
-You can only specify a `include` or a `exclude` rule.
+You can either specify a `include` or a `exclude` rule but never both.
 
 ### Strategy
 
@@ -75,6 +75,13 @@ You can run `scrubber` from the command line. The following options are availabl
 |----------|----------------------|--------------------------------------------------------------|
 | -config  | scrubber.config.toml |  The path to your configuration file.                        |
 | -pretend | false                | If specified scrubber will log actions but not execute them. |
+
+```bash
+# Check your config and see what will be done
+./scrubber -config scrubber.config.toml -pretend
+# Execute the action
+./scrubber -config scrubber.config.toml
+```
 
 ## Build
 
