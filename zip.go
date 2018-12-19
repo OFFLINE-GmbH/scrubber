@@ -24,7 +24,7 @@ func (a zipAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo, e
 
 		if check(file) {
 			if a.pretend {
-				a.log.Printf("[Delete] PRETEND: Would zip file %s", filename)
+				a.log.Printf("[ZIP] PRETEND: Would zip file %s", filename)
 				continue
 			}
 
@@ -36,7 +36,8 @@ func (a zipAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo, e
 			}
 			err = a.fs.Remove(filename)
 			if err != nil {
-				return files, err
+				a.log.Printf("[ZIP] ERROR: Failed to delete original file %s: %s", filename, err)
+				continue;
 			}
 			files = a.action.removeFile(files, i)
 		} else {

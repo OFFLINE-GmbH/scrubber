@@ -29,8 +29,8 @@ func (a deleteAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo
 			err := a.fs.Remove(filename)
 
 			if err != nil {
-				a.log.Printf("[Delete] ERROR: Failed to delete file %s", filename)
-				return files, err
+				a.log.Printf("[Delete] ERROR: Failed to delete file %s: %s", filename, err)
+				continue
 			}
 			files = a.action.removeFile(files, i)
 		} else {
