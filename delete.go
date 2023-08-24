@@ -16,7 +16,8 @@ func newDeleteAction(dir *directory, fs Filesystem, log logger, pretend bool) *d
 
 // perform deletes files that are past a certain age or certain size.
 func (a deleteAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo, error) {
-	for i, file := range files {
+	var newFiles []os.FileInfo
+	for _, file := range files {
 		file := file
 		filename := a.fs.FullPath(file, a.dir.Path)
 		if check(file) {
@@ -33,10 +34,10 @@ func (a deleteAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo
 				a.log.Printf("[Delete] ERROR: Failed to delete file %s: %s", filename, err)
 				continue
 			}
-			files = a.action.removeFile(files, i)
 		} else {
 			a.log.Printf("[Delete] No action is needed for file %s", filename)
+			newFiles = append(newFiles, file)
 		}
 	}
-	return files, nil
+	return newFiles, nil
 }

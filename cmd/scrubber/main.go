@@ -29,7 +29,7 @@ func main() {
 	fs := scrubber.OSFilesystem{}
 
 	s := scrubber.New(&conf, fs, logger, *pretend)
-	_, err := s.Scrub()
+	err := s.Scrub()
 	if err != nil {
 		logger.Fatalf("error while scrubbing files: %s", err)
 	}

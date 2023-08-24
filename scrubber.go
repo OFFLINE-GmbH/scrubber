@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 )
 
 // Scrubber holds the configuration and a filesystem handle.
@@ -78,8 +79,7 @@ func New(c *TomlConfig, fs Filesystem, log logger, pretend bool) *Scrubber {
 }
 
 // Scrub performs the actual cleanup.
-func (s Scrubber) Scrub() ([]os.FileInfo, error) {
-	var files []os.FileInfo
+func (s Scrubber) Scrub() error {
 	for _, configDir := range s.config.Directories {
 
 		expandedDirs, err := s.expandDirs(configDir.Path)
@@ -105,6 +105,14 @@ func (s Scrubber) Scrub() ([]os.FileInfo, error) {
 				continue
 			}
 
+			// Sort files by modification time.
+			slices.SortFunc(files, func(i, j os.FileInfo) int {
+				if i.ModTime().After(j.ModTime()) {
+					return 0
+				}
+				return 1
+			})
+
 			files = scanner.filterFiles(files)
 			files = ApplyKeepLatest(files, dir.KeepLatest)
 
@@ -116,19 +124,20 @@ func (s Scrubber) Scrub() ([]os.FileInfo, error) {
 			s.log.Printf("Found %d files to process", len(files))
 
 			for _, strategy := range dir.Strategies {
+				strategy := strategy
 				s, err := strategyFromConfig(&strategy, &dir, s.fs, s.log, s.pretend)
 				if err != nil {
-					return nil, err
+					return err
 				}
 				_, err = s.process(files)
 				if err != nil {
-					return nil, fmt.Errorf("error while processing files: %s", err)
+					return fmt.Errorf("error while processing files: %s", err)
 				}
 			}
 		}
-
 	}
-	return files, nil
+
+	return nil
 }
 
 // expandDirs expands a Glob pattern and returns all directories.

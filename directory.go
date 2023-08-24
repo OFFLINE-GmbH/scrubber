@@ -2,7 +2,6 @@ package scrubber
 
 import (
 	"os"
-	"slices"
 )
 
 // directory holds the cleanup information for a single path in the filesystem.
@@ -85,13 +84,6 @@ func ApplyKeepLatest(files []os.FileInfo, latest int) []os.FileInfo {
 	if latest < 1 {
 		return files
 	}
-
-	slices.SortFunc(files, func(i, j os.FileInfo) int {
-		if i.ModTime().After(j.ModTime()) {
-			return 0
-		}
-		return 1
-	})
 
 	if len(files) > latest {
 		return files[latest:]
