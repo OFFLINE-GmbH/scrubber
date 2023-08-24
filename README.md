@@ -8,7 +8,7 @@ It is especially useful on platforms where `logrotate` is not easily available o
 
 ## Configuration
 
-You can specify directories to cleanup in a `toml` configuration file. You can define one or more strategies used for
+You can specify directories to clean up in a `toml` configuration file. You can define one or more strategies used for
 each directory.
 
 ```toml
@@ -73,23 +73,14 @@ The following options are available for each `strategy`:
 You can run `scrubber` from the command line. The following options are available:
 
 
-| Param    | Default              | Description                                                  |
-|----------|----------------------|--------------------------------------------------------------|
-| -config  | scrubber.config.toml |  The path to your configuration file.                        |
-| -pretend | false                | If specified scrubber will log actions but not execute them. |
+| Param    | Default              | Description                                                   |
+|----------|----------------------|---------------------------------------------------------------|
+| -config  | scrubber.config.toml | The path to your configuration file.                          |
+| -pretend | false                | If specified, scrubber will log actions but not execute them. |
 
 ```bash
 # Check your config and see what will be done
 ./scrubber -config scrubber.config.toml -pretend
 # Execute the action
 ./scrubber -config scrubber.config.toml
-```
-
-## Build
-
-To generate your own `scrubber` binary execute the following steps:
-
-```bash
-dep ensure
-go build
 ```
