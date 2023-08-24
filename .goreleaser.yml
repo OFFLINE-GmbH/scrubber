@@ -11,6 +11,8 @@ builds:
       - linux
       - windows
 #      - darwin
+    main: ./cmd/scrubber
+    binary: scrubber
 nfpms:
   - package_name: scrubber
     maintainer: Tobias Kuendig <tobias@offline.ch>
