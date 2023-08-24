@@ -2,20 +2,12 @@ title = "Log scrubber example config"
 
 [[directory]]
 name = "Apache Logs"
-path = "/var/logs/apache"
+path = "/tmp/files/*/*/*"
 exclude = ["zip"]
+keep_latest = 10
 
     [[directory.strategy]]
     type = "size"
     action = "delete"
-    limit = "100M"
+    limit = "1b"
 
-    [[directory.strategy]]
-    type = "age"
-    action = "delete"
-    limit = "1y"
-
-    [[directory.strategy]]
-    type = "age"
-    action = "zip"
-    limit = "1d"

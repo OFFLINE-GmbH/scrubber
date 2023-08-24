@@ -2,6 +2,7 @@ package scrubber
 
 import (
 	"os"
+	"slices"
 )
 
 // directory holds the cleanup information for a single path in the filesystem.
@@ -11,6 +12,18 @@ type directory struct {
 	Include    []string
 	Exclude    []string
 	Strategies []StrategyConfig `toml:"strategy"`
+	KeepLatest int
+}
+
+// WithPath returns a copy of the struct with the Path field set to dir.
+func (d directory) WithPath(dir string) directory {
+	return directory{
+		Name:       d.Name,
+		Path:       dir,
+		Include:    d.Include,
+		Exclude:    d.Exclude,
+		Strategies: d.Strategies,
+	}
 }
 
 // directoryScanner is used to scan a directory for files.
@@ -65,4 +78,24 @@ func includesExtension(extensions []string, fileExt string) bool {
 		}
 	}
 	return false
+}
+
+// ApplyKeepLatest applies the keep latest rule to a slice of files.
+func ApplyKeepLatest(files []os.FileInfo, latest int) []os.FileInfo {
+	if latest < 1 {
+		return files
+	}
+
+	slices.SortFunc(files, func(i, j os.FileInfo) int {
+		if i.ModTime().After(j.ModTime()) {
+			return 0
+		}
+		return 1
+	})
+
+	if len(files) > latest {
+		return files[latest:]
+	}
+
+	return files
 }

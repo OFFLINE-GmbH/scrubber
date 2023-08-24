@@ -36,6 +36,36 @@ func TestAge(t *testing.T) {
 	}
 }
 
+// TestAgeWithLimit tests that old files are being deleted correctly but the keep latest attribute is respected.
+func TestAgeKeepLatest(t *testing.T) {
+	files := []os.FileInfo{
+		mockedFileInfo{name: "dayold", modTime: time.Now().AddDate(0, 0, -1)},
+		mockedFileInfo{name: "weekold", modTime: time.Now().AddDate(0, 0, -7)},
+		mockedFileInfo{name: "yearold", modTime: time.Now().AddDate(-1, 0, 0)},
+	}
+
+	files = ApplyKeepLatest(files, 2)
+
+	fs := &mockedFs{}
+
+	c := StrategyConfig{Type: StrategyTypeAge, Limit: "1h", Action: ActionTypeDelete}
+	d := directory{Path: testPath, KeepLatest: 2}
+
+	logger := log.New(ioutil.Discard, "", 0)
+
+	a := newDeleteAction(&d, fs, logger, false)
+	s := newAgeStrategy(&c, &d, a, logger)
+
+	_, err := s.process(files)
+	if err != nil {
+		t.Errorf("expected no error, got %v\n", err)
+	}
+
+	if len(fs.deleted) != 1 || fs.deleted[0] != testPath+"/yearold" {
+		t.Errorf("expected only \"yearold\" to be removed got %v.\n", fs.deleted)
+	}
+}
+
 // TestAgeLimitParser checks if limit strings are unmarshaled into time.Durations correctly.
 func TestAgeLimitParser(t *testing.T) {
 	testTimes := []struct {

@@ -4,6 +4,7 @@ package scrubber
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // Scrubber holds the configuration and a filesystem handle.
@@ -79,36 +80,77 @@ func New(c *TomlConfig, fs Filesystem, log logger, pretend bool) *Scrubber {
 // Scrub performs the actual cleanup.
 func (s Scrubber) Scrub() ([]os.FileInfo, error) {
 	var files []os.FileInfo
-	for _, dir := range s.config.Directories {
-		s.log.Printf("Scanning for files in %s...", dir.Path)
+	for _, configDir := range s.config.Directories {
 
-		scanner := newDirectoryScanner(&dir, s.fs)
-		files, err := scanner.getFiles()
+		expandedDirs, err := s.expandDirs(configDir.Path)
 		if err != nil {
-			s.log.Printf("[ERROR] Failed to load files in directory %s...", dir.Path)
-			continue
-		}
-		files = scanner.filterFiles(files)
-
-		if len(files) < 1 {
-			s.log.Printf("Found no files to process. Skipping %s", dir.Path)
+			s.log.Printf("[ERROR] Failed to expand path %s: %s", configDir.Path, err)
 			continue
 		}
 
-		s.log.Printf("Found %d files to process", len(files))
+		if len(expandedDirs) < 1 {
+			s.log.Printf("Found no files to process. Skipping %s", configDir.Path)
+			continue
+		}
 
-		for _, strategy := range dir.Strategies {
-			s, err := strategyFromConfig(&strategy, &dir, s.fs, s.log, s.pretend)
+		for _, expandedDir := range expandedDirs {
+			dir := configDir.WithPath(expandedDir)
+
+			s.log.Printf("Scanning for files in %s...", dir.Path)
+
+			scanner := newDirectoryScanner(&dir, s.fs)
+			files, err := scanner.getFiles()
 			if err != nil {
-				return nil, err
+				s.log.Printf("[ERROR] Failed to load files in directory %s...: %s", dir.Path, err)
+				continue
 			}
-			_, err = s.process(files)
-			if err != nil {
-				return nil, fmt.Errorf("error while processing files: %s", err)
+
+			files = scanner.filterFiles(files)
+			files = ApplyKeepLatest(files, dir.KeepLatest)
+
+			if len(files) < 1 {
+				s.log.Printf("Found no files to process. Skipping %s", dir.Path)
+				continue
+			}
+
+			s.log.Printf("Found %d files to process", len(files))
+
+			for _, strategy := range dir.Strategies {
+				s, err := strategyFromConfig(&strategy, &dir, s.fs, s.log, s.pretend)
+				if err != nil {
+					return nil, err
+				}
+				_, err = s.process(files)
+				if err != nil {
+					return nil, fmt.Errorf("error while processing files: %s", err)
+				}
 			}
 		}
+
 	}
 	return files, nil
+}
+
+// expandDirs expands a Glob pattern and returns all directories.
+func (s Scrubber) expandDirs(path string) ([]string, error) {
+	expandedPaths, err := filepath.Glob(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var dirs []string
+	for _, expandedPath := range expandedPaths {
+		fileInfo, err := s.fs.Stat(expandedPath)
+		if err != nil {
+			return nil, err
+		}
+
+		if fileInfo.IsDir() {
+			dirs = append(dirs, expandedPath)
+		}
+	}
+
+	return dirs, nil
 }
 
 // strategyFromConfig returns the strategy defined in the configuration file.

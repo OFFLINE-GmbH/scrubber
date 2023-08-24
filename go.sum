@@ -1,6 +1,8 @@
 github.com/BurntSushi/toml v0.3.0 h1:e1/Ivsx3Z0FVTV0NSOv/aVgbUWyQuzj7DDnFblkRvsY=
 github.com/BurntSushi/toml v0.3.0/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/OFFLINE-GmbH/scrubber v1.0.1 h1:di/GczKtcuqQEXOlso4y1/iGEF6YMB2gftYxE/cmKRc=
-github.com/OFFLINE-GmbH/scrubber v1.0.1/go.mod h1:5JniP6yWJha1rnhJgokOqsgy0fHbqR9WibA9g04NC0E=
 github.com/c2h5oh/datasize v0.0.0-20171227191756-4eba002a5eae h1:2Zmk+8cNvAGuY8AyvZuWpUdpQUAXwfom4ReVMe/CTIo=
 github.com/c2h5oh/datasize v0.0.0-20171227191756-4eba002a5eae/go.mod h1:S/7n9copUssQ56c7aAgHqftWO4LTf4xY6CGWt8Bc+3M=
+github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
+github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+golang.org/x/sync v0.3.0 h1:ftCYgMx6zT/asHUrPw8BLLscYtGznsLAnjq5RH9P66E=
+golang.org/x/sync v0.3.0/go.mod h1:FU7BRWz2tNW+3quACPkgCx/L+uEAv1htQ0V83Z9Rj+Y=

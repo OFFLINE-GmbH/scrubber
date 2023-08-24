@@ -27,7 +27,7 @@ func (fs OSFilesystem) Name(file os.FileInfo) string {
 	return file.Name()
 }
 
-// FullPath combines a file's name and it's path to a full path string.
+// FullPath combines a file's name, and it's path to a full path string.
 func (fs OSFilesystem) FullPath(file os.FileInfo, dir string) string {
 	return dir + "/" + file.Name()
 }
@@ -57,7 +57,7 @@ func (fs OSFilesystem) Ext(file os.FileInfo) string {
 	return path.Ext(file.Name())
 }
 
-// ListFiles returns a os.FileInfo for every file in a directory.
+// ListFiles returns an os.FileInfo for every file in a directory.
 func (fs OSFilesystem) ListFiles(path string) ([]os.FileInfo, error) {
 	d, err := os.Open(path)
 	defer d.Close()

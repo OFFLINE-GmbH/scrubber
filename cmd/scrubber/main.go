@@ -4,9 +4,9 @@ import (
 	"flag"
 	"log"
 	"os"
+	"scrubber"
 
 	"github.com/BurntSushi/toml"
-	"github.com/OFFLINE-GmbH/scrubber"
 )
 
 func main() {
