@@ -20,6 +20,7 @@ func newZipAction(dir *directory, fs Filesystem, log logger, pretend bool) *zipA
 // perform zips files that are past a certain age or certain size.
 func (a zipAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo, error) {
 	for i, file := range files {
+		file := file
 		filename := a.fs.FullPath(file, a.dir.Path)
 
 		if check(file) {
@@ -37,7 +38,7 @@ func (a zipAction) perform(files []os.FileInfo, check checkFn) ([]os.FileInfo, e
 			err = a.fs.Remove(filename)
 			if err != nil {
 				a.log.Printf("[ZIP] ERROR: Failed to delete original file %s: %s", filename, err)
-				continue;
+				continue
 			}
 			files = a.action.removeFile(files, i)
 		} else {
